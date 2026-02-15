@@ -138,7 +138,7 @@ canadian-fiscal-sankey --include-ytd
 
 ---
 
-## Additional Options
+## Additional Options and updates
 
 ### Force refresh
 Re-download all source data (ignore cache):

@@ -126,29 +126,56 @@ def parse_statcan_federal_gfs_zip(
     receipts = top_map(rec, 20) if not rec.empty else {}
     outlays = top_map(out, 20) if not out.empty else {}
     
-    # Explode "Other expense" with Level 3 detail
-    if "Other expense" in outlays and outlays["Other expense"] > 0.1:
-        other_expense_budget = outlays["Other expense"]
-        out_clean = out.copy()
-        out_clean['cat_clean'] = out_clean[cat_col].astype(str).str.replace(
-            r'\s*\[[\d,\s]+\]', '', regex=True
-        ).str.strip()
-        out_clean['bracket'] = out_clean[cat_col].astype(str).str.extract(
-            r'\[(\d+)\]', expand=False
-        ).fillna('')
-        
-        level3 = out_clean[(out_clean['bracket'].str.len() == 3) & 
-                           (out_clean['bracket'].astype(str).str.startswith('28', na=False))].copy()
-        
-        if not level3.empty:
-            level3_agg = level3.groupby('cat_clean')['value_bil'].sum().sort_values(ascending=False)
-            level3_agg = level3_agg[level3_agg > 0.01]
+    # Explode major categories to show deeper detail (Level 3+)
+    # Focus on: Grants (to provinces), Miscellaneous, Social benefits
+    outlays_expanded = {}
+    
+    for cat, val in outlays.items():
+        # For large categories, expand to show detail
+        if any(x in cat.lower() for x in ['grant', 'transfer', 'miscellaneous', 'benefit']):
+            # Find matching Level 2 bracket
+            bracket_search = None
+            if 'grant' in cat.lower():
+                bracket_search = '26'
+            elif 'social benefit' in cat.lower():
+                bracket_search = '27'
+            elif 'miscellaneous' in cat.lower() or 'other expense' in cat.lower():
+                bracket_search = '28'
             
-            if len(level3_agg) > 1:
-                del outlays["Other expense"]
-                for cat, val in level3_agg.items():
-                    if cat and cat.strip():
-                        outlays[cat] = float(val)
+            if bracket_search:
+                # Get all Level 3+ descendants
+                detail_rows = out[out['bracket'].astype(str).str.startswith(bracket_search, na=False)].copy()
+                
+                if not detail_rows.empty:
+                    detail_rows['cat_clean'] = detail_rows[cat_col].astype(str).str.replace(
+                        r'\s*\[[\d,\s]+\]', '', regex=True
+                    ).str.strip()
+                    detail_rows['bracket_len'] = detail_rows['bracket'].str.len()
+                    
+                    # Try Level 4, then Level 3, then Level 2.5
+                    for target_len in [4, 3]:
+                        level_detail = detail_rows[detail_rows['bracket_len'] == target_len]
+                        if not level_detail.empty:
+                            agg = level_detail.groupby('cat_clean')['value_bil'].sum().sort_values(ascending=False)
+                            agg = agg[agg > 0.001]  # Keep items > $1M
+                            
+                            if len(agg) > 2:  # Only expand if we have 3+ sub-items
+                                # Replace original with expanded detail
+                                for subcat, subval in agg.items():
+                                    if subcat and subcat.strip() and len(subcat) > 0:
+                                        outlays_expanded[subcat] = float(subval)
+                                break
+                    else:
+                        # No detail found, keep original
+                        outlays_expanded[cat] = val
+                else:
+                    outlays_expanded[cat] = val
+            else:
+                outlays_expanded[cat] = val
+        else:
+            outlays_expanded[cat] = val
+    
+    outlays = outlays_expanded
     
     per = f"Canada federal (annual) REF_DATE={chosen} (StatsCan 10-10-0016-01)"
     return per, receipts, outlays
