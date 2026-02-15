@@ -1,149 +1,142 @@
-# can-qc-dynamic-sankey (v6)
+# Canadian & Québec Fiscal Sankey Diagrams
 
-Dynamic Sankey diagrams for Canadian federal and Québec provincial fiscal data with **enhanced visualizations** and **period selection** options.
+Interactive Sankey diagrams visualizing Canadian federal and Québec provincial government finances with complete fiscal transparency.
+
+**Why this tool?** Government financial reports often hide details in "Other" categories. This tool explodes those aggregates to show where every dollar goes - all 26 Québec ministries, detailed federal expense subcategories, and complete fiscal flows from revenue to spending.
 
 ## Features
 
-- ��� **Enhanced Sankey Visualizations**: Colored flows (green for receipts, blue for outlays, red for deficit), value labels on all flows, proper deficit visualization
-- ��� **Multiple Data Sources**: StatsCan, Finance Canada Fiscal Monitor, Québec Open Data, Québec Financial Situation
-- ��� **Period Selection**: Choose specific fiscal years/months instead of always taking the latest
-- ��� **CSV Export**: Export all data to structured CSV format
-
-## Install
-
-```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-```
+- ✅ **Enhanced Visualizations**: Color-coded flows (green receipts, blue outlays, red deficits), value labels, detailed breakdowns
+- ✅ **Complete Transparency**: All spending categories exploded - no hidden "Other" aggregates (e.g., Québec's "Autres portefeuilles" broken into 26 ministries)
+- ✅ **Multiple Data Sources**: StatsCan, Finance Canada Fiscal Monitor, Québec Open Data (Volumes 1 & 2)
+- ✅ **Period Selection**: Choose specific fiscal years/months or use latest available data
+- ✅ **Export Options**: Generate interactive HTML and high-resolution PNG charts, plus structured CSV data
 
 ## Quick Start
 
-Generate all charts with latest data:
 ```bash
-python can_qc_dynamic_sankey.py --out outputs --write-csv outputs/raw.csv
+# Install dependencies
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Generate charts with latest data
+python can_qc_dynamic_sankey.py
+
+# Or with CSV export
+python can_qc_dynamic_sankey.py --write-csv outputs/data.csv
 ```
 
-This creates interactive HTML Sankey diagrams in the `outputs/` folder with:
-- ✅ Color-coded flows (green receipts, blue outlays, red deficit)
-- ✅ Dollar amounts displayed on each flow
-- ✅ Deficit properly shown as inflow to balance the equation
-- ✅ Summary totals and deficit/surplus highlighted in subtitle
+Charts are saved to `outputs/` folder as interactive HTML and high-resolution PNG files.
+
+## Example Charts
+
+### Canada Federal Finances (2024)
+
+![Canada Federal Sankey Diagram](outputs/sankey_Canada_federal_Canada_federal_annual_REF_DATE=2024_StatsCan_10-10-0016-01.png)
+
+*Revenue: $485.86B | Expenses: $534.51B | Deficit: $48.65B*
+
+### Québec Provincial Finances (2024-2025)
+
+![Québec Sankey Diagram](outputs/sankey_Québec_Québec_annual_2024-2025_Vol_1_CSV.png)
+
+*Revenue: $156.09B | Expenses: $161.26B | Deficit: $5.17B - All 26 ministries shown*
 
 ## Visualization Details
 
-The Sankey diagrams follow the US Treasury visualization style:
+Sankey diagrams follow fiscal accounting principles:
 - **Receipts** (green) flow INTO the central node
 - **Deficit** (red) flows INTO the central node to balance: `Receipts + Deficit = Outlays`
 - **Outlays** (blue/teal) flow OUT of the central node
-- All amounts are labeled (e.g., "$69.1B")
+- All amounts labeled in billions (e.g., "$69.1B")
+- Fiscal year/period prominently displayed at top
 - Central node shows total receipts and total outlays
 
 ## Data Sources
 
-Downloads and caches into `source_data/`:
-- `statcan_10100016_eng.zip` - StatsCan Table 10-10-0016-01 (Canada federal GFS)
-- `can_fiscal_monitor_<YYYY-MM>.pdf` - Latest Finance Canada Fiscal Monitor (YTD)
-- `qc_public_accounts_vol1_latest.csv` - Québec Public Accounts Volume 1 (Open Data)
-- `qc_financial_situation_<token>.pdf` - Latest Québec Financial Situation report
+Automatically downloads and caches public government data into `source_data/`:
 
-Generates Sankey diagrams for:
-1. **Canada federal (annual)** - From StatsCan
-2. **Canada federal (YTD)** - From Fiscal Monitor PDF
-3. **Québec (annual)** - From Public Accounts CSV
-4. **Québec (YTD)** - From Financial Situation PDF
+**Canada Federal:**
+- StatsCan Table 10-10-0016-01 (annual financial statements)
+- Finance Canada Fiscal Monitor PDFs (year-to-date updates)
+
+**Québec Provincial:**
+- Public Accounts Volume 1 CSV (aggregated categories)
+- Public Accounts Volume 2 CSV (detailed ministry breakdown)
+- Financial Situation PDFs (year-to-date updates)
+
+Generates detailed Sankey diagrams showing:
+- **Canada federal (annual)** - Complete breakdown with "Other expense" exploded into subcategories
+- **Québec (annual)** - All 26 ministries visible (Health, Education, Debt Service, Agriculture, Economy, Environment, etc.)
+- Optional YTD charts with `--include-ytd` flag
 
 ---
 
 ## Period Selection Options
 
-### Choose Canada annual year (StatsCan REF_DATE)
+### Canada Annual (StatsCan)
 
-Select a specific year from StatsCan data:
-
+Select specific fiscal year:
 ```bash
-python can_qc_dynamic_sankey.py --can-annual-ref-date 2023 --out outputs
+python can_qc_dynamic_sankey.py --can-annual-ref-date 2023
 ```
 
-### Choose Canada Fiscal Monitor month (YTD)
+### Canada YTD (Fiscal Monitor)
 
-List available months on the Finance Canada website:
-
+List available months:
 ```bash
 python can_qc_dynamic_sankey.py --list-can-fm
 ```
 
-Output example:
-```
-2024-10
-2024-11
-2025-01
-2025-10
-...
-```
-
-Then select a specific month:
-
+Select specific month:
 ```bash
-python can_qc_dynamic_sankey.py --can-fm-year 2025 --can-fm-month 10 --out outputs
+python can_qc_dynamic_sankey.py --can-fm-year 2025 --can-fm-month 10
 ```
 
-### Choose Québec annual year (CSV)
+### Québec Annual (Public Accounts)
 
-Select a specific fiscal year from the Québec Public Accounts data:
-
+Select fiscal year:
 ```bash
-# For numeric year
-python can_qc_dynamic_sankey.py --qc-annual-year 2024 --out outputs
-
-# For fiscal year string
-python can_qc_dynamic_sankey.py --qc-annual-year "2024-2025" --out outputs
+python can_qc_dynamic_sankey.py --qc-annual-year "2024-2025"
 ```
 
-### Choose Québec Financial Situation report year (YTD)
+### Québec YTD (Financial Situation)
 
-Filter by year token in the PDF URL:
-
+Select report year:
 ```bash
-python can_qc_dynamic_sankey.py --qc-fin-year 2025 --out outputs
-# or
-python can_qc_dynamic_sankey.py --qc-fin-year "2025-26" --out outputs
+python can_qc_dynamic_sankey.py --qc-fin-year 2025
+```
+
+### Include YTD Charts
+
+By default, only annual charts are generated. To include YTD:
+```bash
+python can_qc_dynamic_sankey.py --include-ytd
 ```
 
 ---
 
 ## Additional Options
 
-### Force refresh downloads
-
-Re-download all source files (ignores cached data):
-
+### Force refresh
+Re-download all source data (ignore cache):
 ```bash
-python can_qc_dynamic_sankey.py --refresh --out outputs
+python can_qc_dynamic_sankey.py --refresh
 ```
 
-### Strict vs relaxed parsing (PDFs)
-
-Default is **relaxed**: if one PDF line item can't be found, it skips it.
-
-For **strict** mode (fail if any item is missing):
-
+### Strict parsing (PDFs)
+Fail if any PDF line item is missing (default: relaxed, skips missing items):
 ```bash
-python can_qc_dynamic_sankey.py --strict --out outputs
+python can_qc_dynamic_sankey.py --strict
 ```
 
-### Debug PDF parsing
-
-Extract PDF text to files for debugging:
-
+### Debug PDF extraction
+Extract PDF text to files for troubleshooting:
 ```bash
-python can_qc_dynamic_sankey.py --dump-text --out outputs
+python can_qc_dynamic_sankey.py --dump-text
 ```
-
-Then inspect:
-- `outputs/can_fm_text.txt` - Canada Fiscal Monitor extracted text
-- `outputs/qc_fin_text.txt` - Québec Financial Situation extracted text
+Creates `outputs/can_fm_text.txt` and `outputs/qc_fin_text.txt`
 
 ---
 
@@ -151,42 +144,96 @@ Then inspect:
 
 After running, the `outputs/` folder contains:
 
-**Sankey Diagrams** (interactive HTML):
-- `sankey_Canada_federal_Canada_federal_annual_REF_DATE=2024_StatsCan_10-10-0016-01.html`
-- `sankey_Canada_federal_Canada_federal_YTD_2025-10.html`
-- `sankey_Québec_Québec_annual_2024-2025_Vol_1_CSV.html`
-- `sankey_Québec_Québec_YTD_latest.html`
+**Sankey Diagrams:**
+- Interactive HTML files (open in browser for zoom/pan/hover details)
+- High-resolution PNG files (scale=2 for presentations/reports)
+- Files named with government, period, and data source
 
-**Data Files**:
-- `raw.csv` - All data in structured format (if `--write-csv` specified)
-- `summary_totals.csv` - Summary with totals by government/period
+**Data Files** (optional with `--write-csv`):
+- `raw.csv` - All receipts and outlays in structured format
+- CSV includes: government, period, category, amount, unit, source
 
 ---
 
-## Example: Combining Multiple Options
+## Example Commands
 
-Generate charts for specific Canada and Québec fiscal years with CSV export:
+**Generate latest annual charts:**
+```bash
+python can_qc_dynamic_sankey.py
+```
 
+**Generate all charts (annual + YTD) with CSV export:**
+```bash
+python can_qc_dynamic_sankey.py --include-ytd --write-csv outputs/data.csv
+```
+
+**Generate specific fiscal years:**
 ```bash
 python can_qc_dynamic_sankey.py \
-  --can-fm-year 2025 --can-fm-month 10 \
-  --qc-annual-year "2024-2025" \
-  --out outputs \
-  --write-csv outputs/fiscal_data.csv
+  --can-annual-ref-date 2023 \
+  --qc-annual-year "2023-2024" \
+  --write-csv outputs/fiscal_2023.csv
 ```
+
+---
+
+## Key Insights
+
+**Canada Federal (2024):**
+- Revenue: $485.86B
+- Expenses: $534.51B
+- Deficit: $48.65B
+- Largest expense: Grants ($172B), Social benefits ($147B)
+
+**Québec Provincial (2024-2025):**
+- Revenue: $156.09B
+- Expenses: $161.26B
+- Deficit: $5.17B
+- Largest expenses: Health & Social Services ($64.2B), Education ($23.4B)
+- All 26 ministries visible (no hidden aggregates)
 
 ---
 
 ## Troubleshooting
 
-**CSV parsing error**: The Québec CSV uses semicolons (`;`) as delimiters and may have spaces in numbers. The script handles this automatically.
+**Issue: CSV parsing error**  
+Solution: Québec CSVs use semicolons and may have spaces in numbers. This is handled automatically.
 
-**PDF parsing fails**: Use `--dump-text` to inspect extracted text and `--strict` to see which items are missing.
+**Issue: PDF parsing fails**  
+Solution: Use `--dump-text` to inspect extracted text, then `--strict` to identify missing items.
 
-**No Fiscal Monitor found**: The script discovers the latest report from the Finance Canada website. Use `--list-can-fm` to see available periods.
+**Issue: No Fiscal Monitor found**  
+Solution: Use `--list-can-fm` to see available periods on Finance Canada website.
+
+**Issue: Charts look wrong**  
+Solution: Verify totals in the CSV export with `--write-csv` to check data accuracy.
+
+---
+
+## Contributing
+
+Contributions welcome! This project aims to provide transparent, accessible visualization of public fiscal data.
+
+**Ideas for contributions:**
+- Add more Canadian provinces (Ontario, BC, Alberta, etc.)
+- Support additional fiscal periods
+- Improve chart layouts and styling
+- Add comparative analysis features
+- Enhance data validation
+
+Please open an issue to discuss major changes before submitting a PR.
 
 ---
 
 ## License
 
-MIT
+MIT License - See LICENSE file for details.
+
+## Data Sources & Attribution
+
+All data sourced from official government publications:
+- Statistics Canada (Open Government License - Canada)
+- Finance Canada / Finances Canada
+- Données Québec (Open Data License)
+
+This tool is independent and not affiliated with any government entity.
