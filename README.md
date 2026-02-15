@@ -310,3 +310,12 @@ All data sourced from official government publications:
 - [Données Québec](https://www.donneesquebec.ca/) - [Open Data License](https://www.donneesquebec.ca/licence/)
 
 This tool is independent and not affiliated with any government entity.
+
+## Data Sources & Accuracy
+
+All data sourced from official government sources:
+- Statistics Canada (StatsCan Table 10-10-0016-01)
+- Données Québec (Public Accounts)
+
+Users should verify data accuracy and fiscal calculations 
+for their specific use case against official government publications.
