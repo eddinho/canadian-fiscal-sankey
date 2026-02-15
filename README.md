@@ -22,12 +22,6 @@ cd canadian-fiscal-sankey
 pip install -e .
 ```
 
-### With pip (when published to PyPI)
-
-```bash
-pip install canadian-fiscal-sankey
-```
-
 ## Quick Start
 
 ### Generate charts with latest data
