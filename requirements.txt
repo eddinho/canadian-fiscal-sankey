@@ -1,0 +1,6 @@
+pandas
+requests
+PyPDF2
+plotly
+kaleido
+beautifulsoup4
