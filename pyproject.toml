@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "canadian-fiscal-sankey"
-version = "0.1.0"
+version = "0.2.0"
 description = "Interactive Sankey diagrams visualizing Canadian federal and Québec provincial government finances"
 readme = "README.md"
 license = { text = "MIT" }
