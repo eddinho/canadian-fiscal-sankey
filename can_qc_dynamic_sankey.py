@@ -375,6 +375,33 @@ def parse_statcan_federal_gfs_zip(zip_path: Path, ref_date_choice: Optional[str]
 
     receipts = top_map(rec, 20, is_expense=False) if not rec.empty else {}
     outlays = top_map(out, 20, is_expense=True) if not out.empty else {}
+    
+    # Explode "Other expense" unless it's missing/minimal
+    # Check if Other expense exists and is significant
+    if "Other expense" in outlays and outlays["Other expense"] > 0.1:
+        other_expense_budget = outlays["Other expense"]
+        
+        # Extract Level 3 categories under [28x] (Other expense)
+        out_clean = out.copy()
+        out_clean['cat_clean'] = out_clean[cat_col].astype(str).str.replace(r'\s*\[[\d,\s]+\]', '', regex=True).str.strip()
+        out_clean['bracket'] = out_clean[cat_col].astype(str).str.extract(r'\[(\d+)\]', expand=False).fillna('')
+        
+        # Get Level 3 categories (bracket length = 3, starting with 28)
+        level3 = out_clean[(out_clean['bracket'].str.len() == 3) & 
+                           (out_clean['bracket'].astype(str).str.startswith('28', na=False))].copy()
+        
+        if not level3.empty:
+            # Aggregate by clean category
+            level3_agg = level3.groupby('cat_clean')['value_bil'].sum().sort_values(ascending=False)
+            level3_agg = level3_agg[level3_agg > 0.01]  # Filter tiny values
+            
+            if len(level3_agg) > 1:  # Only explode if we have detailed breakdown
+                # Replace "Other expense" with Level 3 categories
+                del outlays["Other expense"]
+                for cat, val in level3_agg.items():
+                    if cat and cat.strip():
+                        outlays[cat] = float(val)
+    
     per = f"Canada federal (annual) REF_DATE={chosen} (StatsCan 10-10-0016-01)"
     return per, receipts, outlays
 
