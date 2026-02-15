@@ -10,19 +10,42 @@ Interactive Sankey diagrams visualizing Canadian federal and Québec provincial 
 - ✅ **Period Selection**: Choose specific fiscal years/months or use latest available data
 - ✅ **Export Options**: Generate interactive HTML and high-resolution PNG charts, plus structured CSV data
 
-## Quick Start
+## Installation
+
+### From source
+
+Clone the repository and install in development mode:
 
 ```bash
-# Install dependencies
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+git clone https://github.com/yourusername/canadian-fiscal-sankey.git
+cd canadian-fiscal-sankey
+pip install -e .
+```
 
-# Generate charts with latest data
-python can_qc_dynamic_sankey.py
+### With pip (when published to PyPI)
 
-# Or with CSV export
-python can_qc_dynamic_sankey.py --write-csv outputs/data.csv
+```bash
+pip install canadian-fiscal-sankey
+```
+
+## Quick Start
+
+### Generate charts with latest data
+
+```bash
+canadian-fiscal-sankey
+```
+
+### With CSV export
+
+```bash
+canadian-fiscal-sankey --write-csv outputs/data.csv
+```
+
+### With specific periods
+
+```bash
+canadian-fiscal-sankey --can-annual-ref-date 2023 --qc-annual-year "2023-2024"
 ```
 
 Charts are saved to `outputs/` folder as interactive HTML and high-resolution PNG files.
@@ -77,40 +100,40 @@ Generates detailed Sankey diagrams showing:
 
 Select specific fiscal year:
 ```bash
-python can_qc_dynamic_sankey.py --can-annual-ref-date 2023
+canadian-fiscal-sankey --can-annual-ref-date 2023
 ```
 
 ### Canada YTD (Fiscal Monitor)
 
 List available months:
 ```bash
-python can_qc_dynamic_sankey.py --list-can-fm
+canadian-fiscal-sankey --list-can-fm
 ```
 
 Select specific month:
 ```bash
-python can_qc_dynamic_sankey.py --can-fm-year 2025 --can-fm-month 10
+canadian-fiscal-sankey --can-fm-year 2025 --can-fm-month 10
 ```
 
 ### Québec Annual (Public Accounts)
 
 Select fiscal year:
 ```bash
-python can_qc_dynamic_sankey.py --qc-annual-year "2024-2025"
+canadian-fiscal-sankey --qc-annual-year "2024-2025"
 ```
 
 ### Québec YTD (Financial Situation)
 
 Select report year:
 ```bash
-python can_qc_dynamic_sankey.py --qc-fin-year 2025
+canadian-fiscal-sankey --qc-fin-year 2025
 ```
 
 ### Include YTD Charts
 
 By default, only annual charts are generated. To include YTD:
 ```bash
-python can_qc_dynamic_sankey.py --include-ytd
+canadian-fiscal-sankey --include-ytd
 ```
 
 ---
@@ -120,19 +143,19 @@ python can_qc_dynamic_sankey.py --include-ytd
 ### Force refresh
 Re-download all source data (ignore cache):
 ```bash
-python can_qc_dynamic_sankey.py --refresh
+canadian-fiscal-sankey --refresh
 ```
 
 ### Strict parsing (PDFs)
 Fail if any PDF line item is missing (default: relaxed, skips missing items):
 ```bash
-python can_qc_dynamic_sankey.py --strict
+canadian-fiscal-sankey --strict
 ```
 
 ### Debug PDF extraction
 Extract PDF text to files for troubleshooting:
 ```bash
-python can_qc_dynamic_sankey.py --dump-text
+canadian-fiscal-sankey --dump-text
 ```
 Creates `outputs/can_fm_text.txt` and `outputs/qc_fin_text.txt`
 
@@ -157,17 +180,17 @@ After running, the `outputs/` folder contains:
 
 **Generate latest annual charts:**
 ```bash
-python can_qc_dynamic_sankey.py
+canadian-fiscal-sankey
 ```
 
 **Generate all charts (annual + YTD) with CSV export:**
 ```bash
-python can_qc_dynamic_sankey.py --include-ytd --write-csv outputs/data.csv
+canadian-fiscal-sankey --include-ytd --write-csv outputs/data.csv
 ```
 
 **Generate specific fiscal years:**
 ```bash
-python can_qc_dynamic_sankey.py \
+canadian-fiscal-sankey \
   --can-annual-ref-date 2023 \
   --qc-annual-year "2023-2024" \
   --write-csv outputs/fiscal_2023.csv
@@ -205,6 +228,58 @@ Solution: Use `--list-can-fm` to see available periods on Finance Canada website
 
 **Issue: Charts look wrong**  
 Solution: Verify totals in the CSV export with `--write-csv` to check data accuracy.
+
+---
+
+## Development & Package Structure
+
+This project uses modern Python packaging with `pyproject.toml` for configuration.
+
+### Project Layout
+
+```
+canadian-fiscal-sankey/
+├── src/
+│   └── canadian_fiscal_sankey/
+│       ├── __init__.py          # Package initialization
+│       └── main.py              # Core module with main() function
+├── pyproject.toml               # Modern Python packaging configuration
+├── README.md
+├── LICENSE
+└── requirements.txt             # Legacy (optional, for reference)
+```
+
+### Development Setup
+
+Clone and install in editable mode:
+
+```bash
+git clone <repo-url>
+cd canadian-fiscal-sankey
+pip install -e .
+```
+
+This installs the package so changes to source code are reflected immediately, and the `canadian-fiscal-sankey` CLI command is registered globally.
+
+### Building & Distribution
+
+Build the package:
+
+```bash
+pip install build
+python -m build
+```
+
+This creates `dist/` with source distribution (`.tar.gz`) and wheel (`.whl`) files ready for PyPI upload.
+
+### Publishing to PyPI
+
+Update version in `pyproject.toml`, then:
+
+```bash
+pip install twine
+python -m twine upload dist/*
+```
 
 ---
 
