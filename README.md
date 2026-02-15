@@ -56,7 +56,7 @@ Charts are saved to `outputs/` folder as interactive HTML and high-resolution PN
 
 ![Canada Federal Sankey Diagram](charts/sankey_Canada_federal_Canada_federal_annual_REF_DATE=2024_StatsCan_10-10-0016-01.png)
 
-*Revenue: $485.86B | Expenses: $534.51B | Deficit: $48.65B*
+*Revenue: $485.86B | Expenses: $549.68B | Deficit: $63.82B*
 
 ### Québec Provincial Finances (2024-2025)
 
@@ -202,9 +202,9 @@ canadian-fiscal-sankey \
 
 **Canada Federal (2024):**
 - Revenue: $485.86B
-- Expenses: $534.51B
-- Deficit: $48.65B
-- Largest expense: Grants ($172B), Social benefits ($147B)
+- Expenses: $549.68B
+- Deficit: $63.82B
+- Largest expenses: Grants to provinces ($165.6B), Old age security benefits ($80.8B), Employee compensation ($63.0B), Interest on debt ($50.1B)
 
 **Québec Provincial (2024-2025):**
 - Revenue: $156.09B
