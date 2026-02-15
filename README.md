@@ -243,38 +243,6 @@ canadian-fiscal-sankey/
 └── requirements.txt             # Legacy (optional, for reference)
 ```
 
-### Development Setup
-
-Clone and install in editable mode:
-
-```bash
-git clone <repo-url>
-cd canadian-fiscal-sankey
-pip install -e .
-```
-
-This installs the package so changes to source code are reflected immediately, and the `canadian-fiscal-sankey` CLI command is registered globally.
-
-### Building & Distribution
-
-Build the package:
-
-```bash
-pip install build
-python -m build
-```
-
-This creates `dist/` with source distribution (`.tar.gz`) and wheel (`.whl`) files ready for PyPI upload.
-
-### Publishing to PyPI
-
-Update version in `pyproject.toml`, then:
-
-```bash
-pip install twine
-python -m twine upload dist/*
-```
-
 ---
 
 ## Contributing
