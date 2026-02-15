@@ -2,8 +2,6 @@
 
 Interactive Sankey diagrams visualizing Canadian federal and Québec provincial government finances with complete fiscal transparency.
 
-**Why this tool?** Government financial reports often hide details in "Other" categories. This tool explodes those aggregates to show where every dollar goes - all 26 Québec ministries, detailed federal expense subcategories, and complete fiscal flows from revenue to spending.
-
 ## Features
 
 - ✅ **Enhanced Visualizations**: Color-coded flows (green receipts, blue outlays, red deficits), value labels, detailed breakdowns
@@ -33,13 +31,13 @@ Charts are saved to `outputs/` folder as interactive HTML and high-resolution PN
 
 ### Canada Federal Finances (2024)
 
-![Canada Federal Sankey Diagram](outputs/sankey_Canada_federal_Canada_federal_annual_REF_DATE=2024_StatsCan_10-10-0016-01.png)
+![Canada Federal Sankey Diagram](charts/sankey_Canada_federal_Canada_federal_annual_REF_DATE=2024_StatsCan_10-10-0016-01.png)
 
 *Revenue: $485.86B | Expenses: $534.51B | Deficit: $48.65B*
 
 ### Québec Provincial Finances (2024-2025)
 
-![Québec Sankey Diagram](outputs/sankey_Québec_Québec_annual_2024-2025_Vol_1_CSV.png)
+![Québec Sankey Diagram](charts/sankey_Québec_Québec_annual_2024-2025_Vol_1_CSV.png)
 
 *Revenue: $156.09B | Expenses: $161.26B | Deficit: $5.17B - All 26 ministries shown*
 
@@ -58,13 +56,13 @@ Sankey diagrams follow fiscal accounting principles:
 Automatically downloads and caches public government data into `source_data/`:
 
 **Canada Federal:**
-- StatsCan Table 10-10-0016-01 (annual financial statements)
-- Finance Canada Fiscal Monitor PDFs (year-to-date updates)
+- [StatsCan Table 10-10-0016-01](https://www150.statcan.gc.ca/n1/en/tbl/csv/10100016-eng.zip) - Annual financial statements
+- [Finance Canada Fiscal Monitor](https://www.canada.ca/en/department-finance/services/publications/fiscal-monitor.html) - Year-to-date updates (PDFs)
 
 **Québec Provincial:**
-- Public Accounts Volume 1 CSV (aggregated categories)
-- Public Accounts Volume 2 CSV (detailed ministry breakdown)
-- Financial Situation PDFs (year-to-date updates)
+- [Public Accounts Volume 1](https://www.donneesquebec.ca/recherche/dataset/55b05d9f-93d1-450f-a8b9-c761b0c001a8) - Aggregated categories (CSV)
+- [Public Accounts Volume 2](https://www.donneesquebec.ca/recherche/dataset/f94cd34c-8202-4cfe-9610-6ae10bf34bc3) - Detailed ministry breakdown (CSV)
+- [Financial Situation Reports](https://www.quebec.ca/en/government/departments-agencies/finances/publications) - Year-to-date updates (PDFs)
 
 Generates detailed Sankey diagrams showing:
 - **Canada federal (annual)** - Complete breakdown with "Other expense" exploded into subcategories
@@ -232,8 +230,8 @@ MIT License - See LICENSE file for details.
 ## Data Sources & Attribution
 
 All data sourced from official government publications:
-- Statistics Canada (Open Government License - Canada)
-- Finance Canada / Finances Canada
-- Données Québec (Open Data License)
+- [Statistics Canada](https://www.statcan.gc.ca/) - [Open Government License - Canada](https://open.canada.ca/en/open-government-licence-canada)
+- [Finance Canada](https://www.canada.ca/en/department-finance.html) - Crown Copyright
+- [Données Québec](https://www.donneesquebec.ca/) - [Open Data License](https://www.donneesquebec.ca/licence/)
 
 This tool is independent and not affiliated with any government entity.
